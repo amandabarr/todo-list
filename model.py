@@ -23,13 +23,13 @@ class List(db.Model):
                         primary_key=True,
                         autoincrement=True
                         )
-    list_name = db.Column(db.String(50), nullable=False, unique=True)
+    name = db.Column(db.String(50), nullable=False, unique=True)
 
     def __repr__(self):
-        return f"List Name = {self.list_name}"
+        return f"List - List Name = {self.name}"
 
 
-class Tasks(db.Model):
+class Task(db.Model):
 
     __tablename__ = "tasks"
 
@@ -43,15 +43,30 @@ class Tasks(db.Model):
     name = db.Column(db.String(100), nullable=False, unique=True)
     completed = db.Column(db.Boolean, default=False, nullable=False)
 
+    list_ = db.relationship("List", backref="tasks")
+
+    def __repr__(self):
+        return f"Task - Task Name = {self.name} Completed = {self.completed}"
+
 
 def setup_tables():
     db.create_all()
 
-    test_list1 = List(list_name="Groceries")
-    test_list2 = List(list_name="Morning Checklist")
-
+    test_list1 = List(name="Groceries")
     db.session.add(test_list1)
+    test_list2 = List(name="Morning Checklist")
     db.session.add(test_list2)
+
+    task1 = Task(name="Oranges")
+    db.session.add(task1)
+    task2 = Task(name="Onions")
+    db.session.add(task2)
+    task3 = Task(name="Brush Teeth")
+    db.session.add(task3)
+
+    test_list1.tasks.append(task1)
+    test_list1.tasks.append(task2)
+    test_list2.tasks.append(task3)
 
     db.session.commit()
 
