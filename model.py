@@ -41,12 +41,12 @@ class Task(db.Model):
                         db.ForeignKey('lists.list_id'),
                         nullable=False)
     name = db.Column(db.String(100), nullable=False, unique=True)
-    completed = db.Column(db.Boolean, default=False, nullable=False)
+    is_completed = db.Column(db.Boolean, default=False, nullable=False)
 
     list_ = db.relationship("List", backref="tasks")
 
     def __repr__(self):
-        return f"Task - Task Name = {self.name} Completed = {self.completed}"
+        return f"Task - Task Name = {self.name} Completed = {self.is_completed}"
 
 
 def setup_tables():
