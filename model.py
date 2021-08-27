@@ -37,16 +37,33 @@ class Task(db.Model):
                         primary_key=True,
                         autoincrement=True
                         )
-    list_id = db.Column(db.Integer,
-                        db.ForeignKey('lists.list_id'),
-                        nullable=False)
     name = db.Column(db.String(100), nullable=False, unique=True)
     is_completed = db.Column(db.Boolean, default=False, nullable=False)
 
-    list_ = db.relationship("List", backref="tasks")
-
     def __repr__(self):
         return f"Task - Task Name = {self.name} Completed = {self.is_completed}"
+
+
+class ListTask(db.Model):
+
+    __tablename__ = "list_tasks"
+
+    list_task_id = db.Column(db.Integer,
+                             primary_key=True,
+                             autoincrement=True
+                             )
+    list_id = db.Column(db.Integer,
+                        db.ForeignKey('lists.list_id'),
+                        nullable=False)
+    task_id = db.Column(db.Integer,
+                        db.ForeignKey('tasks.task_id'),
+                        nullable=False)
+
+    list = db.relationship("List", backref="lists")
+    task = db.relationship("Task", backref="tasks")
+
+    def __repr__(self):
+        return f"ListTask - List_Task_ID = {self.list_task_id} List_ID = {self.list_id} Task_ID = {self.task_id}"
 
 
 def setup_tables():
@@ -63,10 +80,6 @@ def setup_tables():
     db.session.add(task2)
     task3 = Task(name="Brush Teeth")
     db.session.add(task3)
-
-    test_list1.tasks.append(task1)
-    test_list1.tasks.append(task2)
-    test_list2.tasks.append(task3)
 
     db.session.commit()
 
